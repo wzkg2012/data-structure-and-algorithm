@@ -1,0 +1,42 @@
+#define cutoff 3
+int Median(int A [],int left,int right)
+{
+	//int len = sizeof(A)/sizeof(int);
+    //int median;
+    int center = (right+left)/2;
+
+	if(A[left]>A[center])
+		swap(A[left],A[center]);
+	if(A[left]>A[right])
+		swap(A[left],A[center]);
+	if(A[center]>A[right])
+		swap(A[right],A[center]);
+	swap(A[center],A[right-1]);                      //经过三数中值分割法后right比枢纽元要大，所以要将枢纽元放在right-1的位置
+	return A[right-1];
+	
+}
+
+void quickSort(int A[],int left,int right)
+{
+	if(left+cutoff<=right)
+	{
+		int key = Median(A,left,right);
+		int j = right-2;                              //在这个地方犯了一个错误，在数据结构与算法分析上也有说这个错误
+		int i = left+1;                               //i从left+	1开始，是三数中值分割法后，left比枢纽元要小
+
+		while(1)
+		{
+			while(A[i++]<key){};
+			while(A[j--]>key){};
+			if(i<j)
+				swap(A[--i],A[++j]);                 //这里做了自加和自减操作，是因为这里前面的i++和j--，所以要将索引移回去再交换，虽然是一个细节，但是当时在这里检查了好久才发现这个大虫
+			else
+				break;
+		}
+		swap(A[i],A[right-1]);
+		quickSort(A,left,i-1);
+		quickSort(A,i+1,right);                
+	}
+	else
+		insertionSort(A,left,right); 
+}
